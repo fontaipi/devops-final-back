@@ -16,32 +16,26 @@ jobs:
       - restore_cache:
           keys:
             - dependencies-{{ checksum "requirements/dev.txt" }}-{{ checksum "requirements/prod.txt" }}
-            # fallback to using the latest cache if no exact match is found
+            # Fallback to using the latest cache if no exact match is found
             - dependencies-
       - run: 
           name: Install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements/dev.txt
+          command: pip install -r requirements/dev.txt
+      # Upgrade dependencies for sqlalchemy and Flask-SQLAlchemy to pass unit tests
       - run:
-          command: pip install Flask-JWT-Extended --upgrade
+          command: pip install sqlalchemy --upgrade && pip install Flask-SQLAlchemy --upgrade
       - run: 
           name: Setup dababase
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-          command: |
-            . venv/bin/activate
-            flask db upgrade
+          command: flask db upgrade
       - run: 
           name: Flask test
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0
-          command: |
-            . venv/bin/activate
-            flask test
+          command: flask test
   back-deploy-heroku:
     docker:
       - image: buildpack-deps:trusty
@@ -49,7 +43,7 @@ jobs:
       - checkout
       - run:
           name: Heroku Deploy
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:main
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git HEAD:main -f
       - run:
           name: Smoke Test
           command: |
