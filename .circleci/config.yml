@@ -8,6 +8,8 @@ jobs:
           POSTGRES_DB: psqluer
           POSTGRES_USER: myUsr
           POSTGRES_PASSWORD: somePwd
+          POSTGRES_PORT: 5432
+          DATABASE_URL: postgresql://myUsr:somePwd@localhost:5432/psqluer
     working_directory: ~/repo
     steps:
       - checkout
@@ -25,8 +27,6 @@ jobs:
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-            DATABASE_URL: postgresql://myUsr:somePwd@localhost:5432/myUsr
-            POSTGRES_PORT: 5432
           command: flask db upgrade
 
 workflows:
