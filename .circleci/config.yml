@@ -29,7 +29,6 @@ jobs:
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-            CONDUIT_SECRET: something-really-secret
           command: |
             . venv/bin/activate
             flask db upgrade
