@@ -13,10 +13,7 @@ jobs:
             - dependencies-
       - run: 
           name: Install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements/dev.txt
+          command: pip install -r requirements/dev.txt
   test: 
     docker:
       - image: circleci/postgres:9.6.5
@@ -39,14 +36,10 @@ jobs:
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-          command: |
-            . venv/bin/activate
-            flask db upgrade
+          command: flask db upgrade
       - run: 
           name: Flask test
-          command: |
-            . venv/bin/activate
-            flask test
+          command: flask test
 
 
 workflows:
