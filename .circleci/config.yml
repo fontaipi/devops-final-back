@@ -24,6 +24,8 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements/dev.txt
+      - run:
+          command: pip install Flask-JWT-Extended --upgrade
       - run: 
           name: Setup dababase
           environment:
@@ -32,14 +34,14 @@ jobs:
           command: |
             . venv/bin/activate
             flask db upgrade
-      # - run: 
-      #     name: Flask test
-      #     environment:
-      #       FLASK_APP: /home/circleci/repo/autoapp.py
-      #       FLASK_DEBUG: 0
-      #     command: |
-      #       . venv/bin/activate
-      #       flask test
+      - run: 
+          name: Flask test
+          environment:
+            FLASK_APP: /home/circleci/repo/autoapp.py
+            FLASK_DEBUG: 0
+          command: |
+            . venv/bin/activate
+            flask test
   back-deploy-heroku:
     docker:
       - image: buildpack-deps:trusty
