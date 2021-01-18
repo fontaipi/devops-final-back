@@ -21,13 +21,18 @@ jobs:
             - dependencies-
       - run: 
           name: Install dependencies
-          command: pip install -r requirements/dev.txt --user
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/dev.txt
       - run: 
           name: Setup dababase
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-          command: flask db upgrade
+          command: |
+            . venv/bin/activate
+            flask db upgrade
 
 workflows:
   version: 2
