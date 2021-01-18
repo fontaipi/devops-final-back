@@ -25,6 +25,8 @@ class Config(object):
         'http://localhost:4200',
         'http://0.0.0.0:4000',
         'http://localhost:4000',
+        'http://0.0.0.0:' + os.environ.get('PORT', '8080'),
+        'https://0.0.0.0:' + os.environ.get('PORT', '8080'),
         'https://cranky-keller-ede639.netlify.app'
     ]
     JWT_HEADER_TYPE = 'Token'
