@@ -1,21 +1,8 @@
 version: 2
 jobs:
-  build:
+  install:
     docker:
       - image: circleci/python:3.9.1
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependencies-{{ checksum "requirements/dev.txt" }}-{{ checksum "requirements/prod.txt" }}
-            # fallback to using the latest cache if no exact match is found
-            - dependencies-
-      - run: 
-          name: Install dependencies
-          command: pip install -r requirements/dev.txt
-  test: 
-    docker:
       - image: circleci/postgres:9.6.5
         environment:
           POSTGRES_DB: example
@@ -32,21 +19,30 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - dependencies-
       - run: 
+          name: Install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/dev.txt
+      - run: 
           name: Setup dababase
           environment:
             FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
-          command: flask db upgrade
+          command: |
+            . venv/bin/activate
+            flask db upgrade
       - run: 
           name: Flask test
-          command: flask test
-
+          environment:
+            FLASK_APP: /home/circleci/repo/autoapp.py
+            FLASK_DEBUG: 0
+          command: |
+            . venv/bin/activate
+            flask test
 
 workflows:
   version: 2
   build-test:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
+      - install
