@@ -20,13 +20,13 @@ jobs:
       - run: 
           name: Install dependencies
           command: pip install -r requirements/dev.txt --user
-      - run: docker container run --name flask_db_test -e POSTGRES_PASSWORD=somePwd -e POSTGRES_USER=myUsr -p 5432:5432 -d postgres
-      - run: sleep 1
       - run: 
           name: Setup dababase
           environment:
-            DATABASE_URL: postgresql://myUsr:somePwd@localhost:5432/myUsr
+            FLASK_APP: /home/circleci/repo/autoapp.py
             FLASK_DEBUG: 0 
+            DATABASE_URL: postgresql://myUsr:somePwd@localhost:5432/myUsr
+            POSTGRES_PORT: 5432
           command: flask db upgrade
 
 workflows:
